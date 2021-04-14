@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-14 12:18+0000\n"
-"PO-Revision-Date: 2021-04-14 12:18+0000\n"
+"POT-Creation-Date: 2021-04-14 12:19+0000\n"
+"PO-Revision-Date: 2021-04-14 12:19+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,61 +18,61 @@ msgstr ""
 #. module: odoo_invoice_addresses
 #: model:ir.model.fields,field_description:odoo_invoice_addresses.field_account_invoice__partner_shipping_id
 msgid "Delivery Address"
-msgstr "Lieferadresse"
+msgstr "Indirizzo di consegna"
 
 #. module: odoo_invoice_addresses
 #: model:ir.model.fields,help:odoo_invoice_addresses.field_account_invoice__partner_shipping_id
 msgid "Delivery address for current invoice."
-msgstr "Lieferadresse für aktuelle Rechnung."
+msgstr "Indirizzo di spedizione per questa fattura. "
 
 #. module: odoo_invoice_addresses
 #: model:ir.model,name:odoo_invoice_addresses.model_account_invoice
 msgid "Invoice"
-msgstr "Rechnung"
+msgstr "Fattura"
 
 #. module: odoo_invoice_addresses
 #: model:ir.model.fields,field_description:odoo_invoice_addresses.field_account_invoice__partner_invoice_id
 msgid "Invoice Address"
-msgstr "Rechnungsadresse"
+msgstr "Indirizzo fattura"
 
 #. module: odoo_invoice_addresses
 #: model:ir.model,name:odoo_invoice_addresses.model_account_invoice_line
 msgid "Invoice Line"
-msgstr "Rechungsposition"
+msgstr "Riga fattura"
 
 #. module: odoo_invoice_addresses
 #: model:ir.model,name:odoo_invoice_addresses.model_sale_order
 msgid "Sale Order"
-msgstr "Verkaufsauftrag"
+msgstr "Ordine di vendita"
 
 #. module: odoo_invoice_addresses
 #: code:addons/odoo_invoice_addresses/models/account_invoice.py:51
 #, python-format
 msgid "Setting Address as a Customer"
-msgstr "Adresse als Kunde festlegen"
+msgstr "Impostare l'indirizzo come cliente"
 
 #. module: odoo_invoice_addresses
 #: code:addons/odoo_invoice_addresses/models/account_invoice.py:88
 #, python-format
 msgid "Warning!"
-msgstr "Warnung!"
+msgstr "Attenzione!"
 
 #. module: odoo_invoice_addresses
 #: code:addons/odoo_invoice_addresses/models/account_invoice.py:52
 #, python-format
 msgid "Warning. It seems like you're trying to use an Address as the main Customer of this Invoice.\n"
 "If you didn't do it intentionally, please consider change the value of the Customer field."
-msgstr "Warnung. Anscheinend versuchen Sie, eine Adresse als Hauptkunden dieser Rechnung zu verwenden.\n"
-"Wenn Sie dies nicht absichtlich getan haben, sollten Sie den Wert des Felds 'Kunde' ändern."
+msgstr "Attenzione. Sembra che tu stia cercando di usare un indirizzo come cliente principale di questa fattura.\n"
+"Se non l'hai fatto intenzionalmente, considera di cambiare il valore del campo Cliente."
 
 #. module: odoo_invoice_addresses
 #: model:ir.model.fields,help:odoo_invoice_addresses.field_account_invoice__partner_invoice_id
 msgid "You can find a contact by its Name, TIN, Email or Internal Reference."
-msgstr "Sie können einen Kontakt finden mit Namen, TIN, E-Mail oder einer internen Referenz"
+msgstr "È possibile trovare un contatto per nome, partita IVA, e-mail o riferimento interno."
 
 #. module: odoo_invoice_addresses
 #: code:addons/odoo_invoice_addresses/models/account_invoice.py:89
 #, python-format
 msgid "You must first select a partner."
-msgstr "Sie müssen zuerst einen Partner auswählen."
+msgstr "Devi prima scegliere un partner."
 

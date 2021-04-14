@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-14 12:18+0000\n"
-"PO-Revision-Date: 2021-04-14 12:18+0000\n"
+"POT-Creation-Date: 2020-02-13 15:30+0000\n"
+"PO-Revision-Date: 2020-02-13 15:30+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -46,19 +46,19 @@ msgid "Sale Order"
 msgstr "Verkaufsauftrag"
 
 #. module: odoo_invoice_addresses
-#: code:addons/odoo_invoice_addresses/models/account_invoice.py:51
+#: code:addons/odoo_invoice_addresses/models/account_invoice.py:44
 #, python-format
 msgid "Setting Address as a Customer"
 msgstr "Adresse als Kunde festlegen"
 
 #. module: odoo_invoice_addresses
-#: code:addons/odoo_invoice_addresses/models/account_invoice.py:88
+#: code:addons/odoo_invoice_addresses/models/account_invoice.py:68
 #, python-format
 msgid "Warning!"
 msgstr "Warnung!"
 
 #. module: odoo_invoice_addresses
-#: code:addons/odoo_invoice_addresses/models/account_invoice.py:52
+#: code:addons/odoo_invoice_addresses/models/account_invoice.py:45
 #, python-format
 msgid "Warning. It seems like you're trying to use an Address as the main Customer of this Invoice.\n"
 "If you didn't do it intentionally, please consider change the value of the Customer field."
@@ -71,7 +71,7 @@ msgid "You can find a contact by its Name, TIN, Email or Internal Reference."
 msgstr "Sie können einen Kontakt finden mit Namen, TIN, E-Mail oder einer internen Referenz"
 
 #. module: odoo_invoice_addresses
-#: code:addons/odoo_invoice_addresses/models/account_invoice.py:89
+#: code:addons/odoo_invoice_addresses/models/account_invoice.py:69
 #, python-format
 msgid "You must first select a partner."
 msgstr "Sie müssen zuerst einen Partner auswählen."
