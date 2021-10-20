@@ -5,7 +5,7 @@ from odoo.tools import float_compare
 
 
 class AccountInvoiceInherited(models.Model):
-    _inherit = "account.invoice"
+    _inherit = "account.move"
 
     # Adding our two new fields, representing the Invoicing Address and the Delivery Address respectively
     partner_invoice_id = fields.Many2one('res.partner', string="Invoice Address", change_default=True,
@@ -33,11 +33,11 @@ class AccountInvoiceInherited(models.Model):
 
     @api.onchange('partner_invoice_id', 'company_id')
     def _onchange_invoice_address(self):
-        """ This method is created to make sure that the language of the Terms and 
+        """ This method is created to make sure that the language of the Terms and
         Conditions is set according to the partner_invoice_id or company_id """
         inv_type = self.type or self.env.context.get('type', 'out_invoice')
         if inv_type == 'out_invoice':
-            company = self.company_id or self.env.user.company_id  
+            company = self.company_id or self.env.user.company_id
             current_lang = self.partner_invoice_id.lang or self.partner_id.lang
             self.comment = company.with_context(lang=current_lang).sale_note or (
                     self._origin.company_id == company and self.comment)
@@ -57,7 +57,7 @@ class AccountInvoiceInherited(models.Model):
 
     @api.model
     def _prepare_refund(self, invoice, date_invoice=None, date=None, description=None, journal_id=None):
-        """ When something is added to credit note this method is called in order 
+        """ When something is added to credit note this method is called in order
         to prepare the refund data, so now we just include partner_invoice_id"""
         values = super(AccountInvoiceInherited, self)._prepare_refund(invoice, date_invoice=date_invoice, date=date, description=description, journal_id=journal_id)
         if invoice.partner_invoice_id:
@@ -66,17 +66,17 @@ class AccountInvoiceInherited(models.Model):
 
 
 class AccountInvoiceLine(models.Model):
-    _inherit = "account.invoice.line"
+    _inherit = "account.move.line"
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
-        """ This method is completely overwritten and we'll copy the 
+        """ This method is completely overwritten and we'll copy the
         original and just change only one line of code"""
         domain = {}
         if not self.invoice_id:
             return
 
-        part = self.invoice_id.partner_invoice_id or self.invoice_id.partner_id  #Right here we first use our new 
+        part = self.invoice_id.partner_invoice_id or self.invoice_id.partner_id  #Right here we first use our new
         # variable (partner_invoice_id) and if not the partner_id
         fpos = self.invoice_id.fiscal_position_id
         company = self.invoice_id.company_id

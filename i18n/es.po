@@ -26,7 +26,7 @@ msgid "Delivery address for current invoice."
 msgstr "Dirección de entrega de la factura actual."
 
 #. module: odoo_invoice_addresses
-#: model:ir.model,name:odoo_invoice_addresses.model_account_invoice
+#: model:ir.model,name:odoo_invoice_addresses.model_account_move
 msgid "Invoice"
 msgstr "Factura"
 
@@ -36,7 +36,7 @@ msgid "Invoice Address"
 msgstr "Dirección de factura"
 
 #. module: odoo_invoice_addresses
-#: model:ir.model,name:odoo_invoice_addresses.model_account_invoice_line
+#: model:ir.model,name:odoo_invoice_addresses.model_account_move_line
 msgid "Invoice Line"
 msgstr "Linea de Factura"
 

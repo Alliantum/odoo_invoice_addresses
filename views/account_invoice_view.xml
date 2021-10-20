@@ -3,7 +3,7 @@
         <!-- Here we add partner_shipping_id and partner_invoice_id to the form view -->
         <record id="os_inherited_invoice_form" model="ir.ui.view">
             <field name="name">os.inherited.account.invoice.form</field>
-            <field name="model">account.invoice</field>
+            <field name="model">account.move</field>
             <field name="type">form</field>
             <field name="inherit_id" ref="account.invoice_form" />
             <field name="arch" type="xml">
