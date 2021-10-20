@@ -6,7 +6,6 @@ from odoo import models, fields, api
 class SaleOrderInherited(models.Model):
     _inherit = "sale.order"
 
-    @api.multi
     def _prepare_invoice(self):
         """
         Prepare the dict of values that will create the new invoice for a sales order. This method may be
