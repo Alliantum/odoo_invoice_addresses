@@ -5,7 +5,7 @@
             <field name="name">os.inherited.account.invoice.form</field>
             <field name="model">account.move</field>
             <field name="type">form</field>
-            <field name="inherit_id" ref="account.invoice_form" />
+            <field name="inherit_id" ref="account.view_move_form" />
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="partner_invoice_id" required="1" context="{'default_type':'invoice', 'show_address_short': 1}" options='{"always_reload": True}'/>
