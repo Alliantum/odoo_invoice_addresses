@@ -26,7 +26,7 @@ class AccountMove(models.Model):
         if inv_type == 'out_invoice':
             company = self.company_id or self.env.company
             current_lang = self.partner_invoice_id.lang or self.partner_id.lang
-            self.narration = company.with_context(lang=current_lang).sale_note or (
+            self.narration = company.with_context(lang=current_lang).invoice_terms or (
                     self._origin.company_id == company and self.narration)
 
     @api.onchange('partner_invoice_id', 'company_id')
@@ -37,7 +37,7 @@ class AccountMove(models.Model):
         if inv_type == 'out_invoice':
             company = self.company_id or self.env.company
             current_lang = self.partner_invoice_id.lang or self.partner_id.lang
-            self.narration = company.with_context(lang=current_lang).sale_note or (
+            self.narration = company.with_context(lang=current_lang).invoice_terms or (
                     self._origin.company_id == company and self.narration)
 
     @api.onchange('partner_id')
