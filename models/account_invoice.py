@@ -1,46 +1,44 @@
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
 from odoo.tools import float_compare
 
 
-class AccountInvoiceInherited(models.Model):
+class AccountMove(models.Model):
     _inherit = "account.move"
 
     # Adding our two new fields, representing the Invoicing Address and the Delivery Address respectively
     partner_invoice_id = fields.Many2one('res.partner', string="Invoice Address", change_default=True,
-                                 track_visibility='always', ondelete='restrict',
+                                 tracking=True, ondelete='restrict',
                                  help="You can find a contact by its Name, TIN, Email or Internal Reference.",
                                  domain="[('id', 'child_of', partner_id)]")
     #partner_shipping_id is an existing field but we are going to let the user choose only the childs of the partner selected
     partner_shipping_id = fields.Many2one(domain="[('id', 'child_of', partner_id)]")
 
     @api.onchange('partner_id', 'company_id')
-    def _onchange_delivery_address(self):
+    def _onchange_partner_id(self):
         """ Here we are just automating the two addresses input (delivery and invoice) to the default
         whenever the company or the partner is changed.
         This method is overwritten so we call super first and then our changes."""
-        super(AccountInvoiceInherited, self)._onchange_delivery_address()
+        super(AccountMove, self)._onchange_partner_id()
         addr = self.partner_id.address_get(['delivery', 'invoice'])
         self.partner_invoice_id = addr and addr.get('invoice')
         self.partner_shipping_id = addr and addr.get('delivery')
-        inv_type = self.type or self.env.context.get('type', 'out_invoice')
+        inv_type = self.move_type or self.env.context.get('move_type', 'out_invoice')
         if inv_type == 'out_invoice':
-            company = self.company_id or self.env.user.company_id
+            company = self.company_id or self.env.company
             current_lang = self.partner_invoice_id.lang or self.partner_id.lang
-            self.comment = company.with_context(lang=current_lang).sale_note or (
-                    self._origin.company_id == company and self.comment)
+            self.narration = company.with_context(lang=current_lang).sale_note or (
+                    self._origin.company_id == company and self.narration)
 
     @api.onchange('partner_invoice_id', 'company_id')
     def _onchange_invoice_address(self):
         """ This method is created to make sure that the language of the Terms and
         Conditions is set according to the partner_invoice_id or company_id """
-        inv_type = self.type or self.env.context.get('type', 'out_invoice')
+        inv_type = self.move_type or self.env.context.get('move_type', 'out_invoice')
         if inv_type == 'out_invoice':
-            company = self.company_id or self.env.user.company_id
+            company = self.company_id or self.env.company
             current_lang = self.partner_invoice_id.lang or self.partner_id.lang
-            self.comment = company.with_context(lang=current_lang).sale_note or (
-                    self._origin.company_id == company and self.comment)
+            self.narration = company.with_context(lang=current_lang).sale_note or (
+                    self._origin.company_id == company and self.narration)
 
     @api.onchange('partner_id')
     def _onchange_partner_id_check(self):
@@ -59,7 +57,7 @@ class AccountInvoiceInherited(models.Model):
     def _prepare_refund(self, invoice, date_invoice=None, date=None, description=None, journal_id=None):
         """ When something is added to credit note this method is called in order
         to prepare the refund data, so now we just include partner_invoice_id"""
-        values = super(AccountInvoiceInherited, self)._prepare_refund(invoice, date_invoice=date_invoice, date=date, description=description, journal_id=journal_id)
+        values = super(AccountMove, self)._prepare_refund(invoice, date_invoice=date_invoice, date=date, description=description, journal_id=journal_id)
         if invoice.partner_invoice_id:
             values['partner_invoice_id'] = invoice.partner_invoice_id.id
         return values
@@ -126,7 +124,7 @@ class AccountInvoiceLine(models.Model):
         self.ensure_one()
 
         # Keep only taxes of the company
-        company_id = self.company_id or self.env.user.company_id
+        company_id = self.company_id or self.env.company
 
         if self.invoice_id.type in ('out_invoice', 'out_refund'):
             taxes = self.product_id.taxes_id.filtered(lambda r: r.company_id == company_id) or self.account_id.tax_ids or self.invoice_id.company_id.account_sale_tax_id
