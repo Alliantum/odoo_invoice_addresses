@@ -13,6 +13,15 @@ class AccountMove(models.Model):
     #partner_shipping_id is an existing field but we are going to let the user choose only the childs of the partner selected
     partner_shipping_id = fields.Many2one(domain="[('id', 'child_of', partner_id)]")
 
+    @api.depends('partner_id')
+    def _compute_commercial_partner_id(self):
+        # TODO Migration: check this with more calm later. What we need is to make the partner_invoice_id to take protagonism here,
+        # for example, to make odoo know the language in which the account.move.line must show its name
+        super(AccountMove, self)._compute_commercial_partner_id()
+        for move in self:
+            if move.partner_invoice_id:
+                move.commercial_partner_id = move.partner_invoice_id
+
     @api.onchange('partner_id', 'company_id')
     def _onchange_partner_id(self):
         """ Here we are just automating the two addresses input (delivery and invoice) to the default
@@ -66,59 +75,6 @@ class AccountMove(models.Model):
 class AccountInvoiceLine(models.Model):
     _inherit = "account.move.line"
 
-    @api.onchange('product_id')
-    def _onchange_product_id(self):
-        """ This method is completely overwritten and we'll copy the
-        original and just change only one line of code"""
-        domain = {}
-        if not self.invoice_id:
-            return
-
-        part = self.invoice_id.partner_invoice_id or self.invoice_id.partner_id  #Right here we first use our new
-        # variable (partner_invoice_id) and if not the partner_id
-        fpos = self.invoice_id.fiscal_position_id
-        company = self.invoice_id.company_id
-        currency = self.invoice_id.currency_id
-        type = self.invoice_id.type
-
-        if not part:
-            warning = {
-                'title': _('Warning!'),
-                'message': _('You must first select a partner.'),
-            }
-            return {'warning': warning}
-
-        if not self.product_id:
-            if type not in ('in_invoice', 'in_refund'):
-                self.price_unit = 0.0
-            domain['uom_id'] = []
-            # if fpos:
-            #     self.account_id = fpos.map_account(self.account_id)
-        else:
-            self_lang = self
-            if part.lang:
-                self_lang = self.with_context(lang=part.lang)
-
-            product = self_lang.product_id
-            account = self.get_invoice_line_account(type, product, fpos, company)
-            if account:
-                self.account_id = account.id
-            self._set_taxes()
-
-            product_name = self_lang._get_invoice_line_name_from_product()
-            if product_name != None:
-                self.name = product_name
-
-            if not self.uom_id or product.uom_id.category_id.id != self.uom_id.category_id.id:
-                self.uom_id = product.uom_id.id
-            domain['uom_id'] = [('category_id', '=', product.uom_id.category_id.id)]
-
-            if company and currency:
-
-                if self.uom_id and self.uom_id.id != product.uom_id.id:
-                    self.price_unit = product.uom_id._compute_price(self.price_unit, self.uom_id)
-        return {'domain': domain}
-
     def _set_taxes(self):
         """ And here we do the same as the above method"""
         self.ensure_one()
@@ -126,15 +82,15 @@ class AccountInvoiceLine(models.Model):
         # Keep only taxes of the company
         company_id = self.company_id or self.env.company
 
-        if self.invoice_id.type in ('out_invoice', 'out_refund'):
-            taxes = self.product_id.taxes_id.filtered(lambda r: r.company_id == company_id) or self.account_id.tax_ids or self.invoice_id.company_id.account_sale_tax_id
+        if self.move_id.move_type in ('out_invoice', 'out_refund'):
+            taxes = self.product_id.taxes_id.filtered(lambda r: r.company_id == company_id) or self.account_id.tax_ids or self.move_id.company_id.account_sale_tax_id
         else:
-            taxes = self.product_id.supplier_taxes_id.filtered(lambda r: r.company_id == company_id) or self.account_id.tax_ids or self.invoice_id.company_id.account_purchase_tax_id
+            taxes = self.product_id.supplier_taxes_id.filtered(lambda r: r.company_id == company_id) or self.account_id.tax_ids or self.move_id.company_id.account_purchase_tax_id
         # In this line at the end we change the last parameter for our variable and if not the partner_id
-        self.invoice_line_tax_ids = fp_taxes = self.invoice_id.fiscal_position_id.map_tax(taxes, self.product_id, self.invoice_id.partner_invoice_id or self.invoice_id.partner_id)
+        self.invoice_line_tax_ids = fp_taxes = self.move_id.fiscal_position_id.map_tax(taxes, self.product_id, self.move_id.partner_invoice_id or self.move_id.partner_id)
 
         fix_price = self.env['account.tax']._fix_tax_included_price
-        if self.invoice_id.type in ('in_invoice', 'in_refund'):
+        if self.move_id.move_type in ('in_invoice', 'in_refund'):
             prec = self.env['decimal.precision'].precision_get('Product Price')
             if not self.price_unit or float_compare(self.price_unit, self.product_id.standard_price, precision_digits=prec) == 0:
                 self.price_unit = fix_price(self.product_id.standard_price, taxes, fp_taxes)
